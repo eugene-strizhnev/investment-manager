@@ -5,10 +5,13 @@ import Navbar from 'react-bootstrap/lib/Navbar';
 import NavItem  from 'react-bootstrap/lib/NavItem';
 import { Link } from 'react-router';
 import LinkContainer from 'react-router-bootstrap/lib/LinkContainer';
+import { connect } from 'react-redux';
+import { isUserSignedIn } from 'redux/models/user';
 
 import './bootstrap.css';
 const propTypes = {
-    children: PropTypes.node
+    children: PropTypes.node,
+    userSignedIn: PropTypes.bool.isRequired
 };
 
 class App extends Component {
@@ -24,9 +27,11 @@ class App extends Component {
                     </Navbar.Header>
                     <Navbar.Collapse>
                         <Nav navbar>
-                            <LinkContainer to='/time'>
-                                <NavItem>Время</NavItem>
-                            </LinkContainer>
+                            {this.props.userSignedIn && (
+                                <LinkContainer to='/time'>
+                                    <NavItem>Время</NavItem>
+                                </LinkContainer>
+                            )}
                             <LinkContainer to='/counters'>
                                 <NavItem>Счетчики</NavItem>
                             </LinkContainer>
@@ -43,4 +48,8 @@ class App extends Component {
 
 App.propTypes = propTypes;
 
-export default App;
+function mapStateToProps(state) {
+    return { userSignedIn: isUserSignedIn(state) };
+}
+
+export default connect(mapStateToProps)(App);
